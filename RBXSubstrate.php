@@ -32,7 +32,7 @@ class RBXSubstrate
         $this->_rootDirectory = $rootDirectory;
     }
 
-    public function CreateDirectory(string $path, bool $changeDir = true)
+    public function createDirectory(string $path, bool $changeDir = true)
     {
         if(mkdir($path, 0777, true))
         {
@@ -42,12 +42,12 @@ class RBXSubstrate
         return false;
     }
 
-    public function CurrentDirectory()
+    public function currentDirectory()
     {
         return $this->_currentDirectory;
     }
 
-    public function MoveUpLevel()
+    public function moveUpLevel()
     {
         if($this->_currentDirectory != null)
         {
@@ -57,7 +57,7 @@ class RBXSubstrate
         return false;
     }
 
-    public function SetCurrentDirectory(string $path)
+    public function setCurrentDirectory(string $path)
     {
         if(file_exists($path))
         {
@@ -67,7 +67,7 @@ class RBXSubstrate
         return false;
     }
 
-    public function GetRootDirectory()
+    public function getRootDirectory()
     {
         return $this->_rootDirectory;
     }
