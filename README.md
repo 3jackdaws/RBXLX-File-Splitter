@@ -7,6 +7,9 @@ Roblox Studio place files typically save the entire structure of a project in on
 #Usage
 The tool is run once to convert an existing .rbxlx file to a directory structure.  This directory can now be committed to git and changes are more easily visible.  The tool can also be used to convert a project directory back into a rbxlx file.
 
+#Why PHP?
+PHP is great for websites because it can be embedded into the page markup.  Why, then, is it being used like a general purpose scripting language? Actually, this started out as a web thing.  When the idea changed to this xml converter, the language did not.  Normally, a project like this would be done in Python or Java or basically anything that isn't a web scripting language, but we wanted to use something new and our choices were either PHP or a functional programming language. 
+
 ##TODO
 1.  Figure out how to do bullets in markdown.
 2.  Write a recursive function to turn a simpleXML object into a specific directory structure.
