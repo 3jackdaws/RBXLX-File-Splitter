@@ -13,30 +13,41 @@ class RBXSubstrate
     /*
      * Parameters: (simpleXML object, path to save location
      */
-    public static function XML2File(SimpleXMLElement $xmlObject, string $path)
+    public static function XML2File(SimpleXMLElement $xmlObject, $path)
     {
         $fileHandle = fopen($path, "w") or die("Could not open file " . $path . " for writing.");
         $xmlString = $xmlObject->asXML();
         fwrite($fileHandle, $xmlString, strlen($xmlString));
     }
 
-    public static function File2XML(string $path)
+    public static function File2XML($path)
     {
         $fileHandle = fopen($path, "r") or die("Could not open file " . $path . " for reading.");
         $xmlString = fread($fileHandle, filesize($path));
         return simplexml_load_string($xmlString);
     }
 
-    public function __construct(string $rootDirectory)
+    public function __construct($rootDirectory)
     {
-        $this->_rootDirectory = $rootDirectory;
+        $this->_rootDirectory = $rootDirectory . "/datamodel";
+        $this->_currentDirectory = $this->_rootDirectory;
     }
 
-    public function createDirectory(string $path, bool $changeDir = true)
+    public function testCreateDirectory($path, bool $changeDir = NULL)
+    {
+        if(print "Creating Directory " . $path . "\n")
+        {
+            if($changeDir == NULL) $this->_currentDirectory = $path;
+            return true;
+        }
+        return false;
+    }
+
+    public function createDirectory($path, bool $changeDir = NULL)
     {
         if(mkdir($path, 0777, true))
         {
-            if($changeDir) $this->_currentDirectory = $path;
+            if($changeDir == NULL) $this->_currentDirectory = $path;
             return true;
         }
         return false;
@@ -57,7 +68,7 @@ class RBXSubstrate
         return false;
     }
 
-    public function setCurrentDirectory(string $path)
+    public function setCurrentDirectory($path)
     {
         if(file_exists($path))
         {

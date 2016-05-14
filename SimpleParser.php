@@ -6,15 +6,15 @@
 		echo " - Creating Properties file at " . $path . "<br>";
 	}
 
-	function createItemDirectory(string $path)
+	function createItemDirectory(string $path, SimpleXMLElement $xml)
 	{
-		echo " - Creating Directory [" . $path . "]<br>";
+		echo "<br>Creating Directory [" . $path . "/" . getItemName($xml) . "]<br>";
 	}
 
 	function getChildren(SimpleXMLElement $xml, int $level)
 	{
 
-		for ($i = 0; $i < $level; $i++)
+		for ($i = 0; $i < $level*2; $i++)
 		{
 			echo "&nbsp;&nbsp;&nbsp;";
 		}
@@ -27,11 +27,11 @@
 			}
 			case "Item":
 			{
-				createItemDirectory("Temp Path" . $xml->getName());
+				createItemDirectory("Temp Path", $xml);
 			}
 			default:
 			{
-				for ($i = 0; $i < $level; $i++)
+				for ($i = 0; $i < $level*2; $i++)
 				{
 					echo "&nbsp;&nbsp;&nbsp;";
 				}
@@ -54,6 +54,11 @@
 
 
 
+	}
+
+	function getItemName(SimpleXMLElement $xml)
+	{
+		return $xml->Properties->string;
 	}
 
 	include_once("RBXSubstrate.php");
