@@ -59,6 +59,7 @@ class RBXDirectory
             {
                 print $spacing;
                 $this->RBXSubstrateInstance->createItemDirectory($xml);
+                $this->RBXSubstrateInstance->createItemAttributesXML($xml);
             }
             default:
             {

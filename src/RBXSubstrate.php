@@ -17,7 +17,10 @@ class RBXSubstrate
     {
         $fileHandle = fopen($path, "w") or die("Could not open file " . $path . " for writing.");
         $xmlString = $xmlObject->asXML();
-        fwrite($fileHandle, $xmlString, strlen($xmlString));
+        $pattern = "/<\?xml.+\\n/";
+        $replacement = "";
+        $new = preg_replace($pattern, $replacement, $xmlString);
+        fwrite($fileHandle, $new, strlen($new));
     }
 
     public static function File2XML($path)
@@ -104,8 +107,20 @@ class RBXSubstrate
         return $xml->Properties->string;
     }
 
-    public function createItemAttributesXML(SimpleXMLElement $xml)
+    public function createItemAttributesXML(SimpleXMLElement $xml, $path = NULL)
     {
-        
+        if($xml != NULL)
+        {
+            if($path == NULL) $path = $this->currentDirectory();
+            $newXML = "";
+            $attributes = simplexml_load_string("<roblox xmlns:xmime=\"http://www.w3.org/2005/05/xmlmime\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://www.roblox.com/roblox.xsd\" version=\"4\"></roblox>");
+            foreach ($xml->attributes() as $k => $v)
+            {
+                $attributes->addChild($k, $v);
+            }
+            
+            RBXSubstrate::XML2File($attributes, $path . "/Attributes.xml");
+
+        }
     }
 }
