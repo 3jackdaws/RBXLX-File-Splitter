@@ -80,9 +80,14 @@ class RBXSubstrate
 
     public function createPropertiesFile(SimpleXMLElement $xml, $path = NULL)
     {
-        if($path == NULL) $path = $this->currentDirectory();
-        RBXSubstrate::XML2File($xml, $path . "/Properties.xml");
-        //print " - Creating Properties file at " . $path . PHP_EOL;
+        if($xml != NULL)
+        {
+            if($path == NULL) $path = $this->currentDirectory();
+            $properties = simplexml_load_string("<roblox xmlns:xmime=\"http://www.w3.org/2005/05/xmlmime\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://www.roblox.com/roblox.xsd\" version=\"4\">" . $xml->asXML() . "</roblox>");
+            RBXSubstrate::XML2File($properties, $path . "/Properties.xml");
+            //print " - Creating Properties file at " . $path . PHP_EOL;
+        }
+
 
     }
 
@@ -97,5 +102,10 @@ class RBXSubstrate
     public function getItemName(SimpleXMLElement $xml)
     {
         return $xml->Properties->string;
+    }
+
+    public function createItemAttributesXML(SimpleXMLElement $xml)
+    {
+        
     }
 }

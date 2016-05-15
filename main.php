@@ -14,6 +14,7 @@ echo $filename . "\n";
 $xml = RBXSubstrate::File2XML($filename);
 //var_dump($xml);
 $rbxDummy = new RBXSubstrateDummy(dirname(__FILE__));
+//$parser = new RBXDirectory(dirname(__FILE__), $rbxDummy);
 $parser = new RBXDirectory(dirname(__FILE__));
 $parser->generateDirFromXml($xml);
 //var_dump($parser);

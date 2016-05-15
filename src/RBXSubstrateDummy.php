@@ -32,6 +32,13 @@ class RBXSubstrateDummy extends RBXSubstrate
 
     public function createItemDirectory(SimpleXMLElement $xml)
     {
+        $attributesObject = new SimpleXMLElement("<attributes></attributes>");
+        foreach ($xml->attributes() as $k => $v)
+        {
+            $attributesObject = $attributesObject->addChild($k, $v);
+        }
+        print $attributesObject->asXML();
+        //print "Attributes: " . var_dump($xml->attributes()). "\n";
         $directory = $this->currentDirectory() . "/" . $this->getItemName($xml);
         //mkdir($this->RBXSubstrateInstance->currentDirectory() . "/" . $this->getItemName($xml));
         $this->createDirectory($directory);
