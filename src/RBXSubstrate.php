@@ -145,6 +145,16 @@ class RBXSubstrate
     public function getItemName(SimpleXMLElement $xml)
     {
         $strAry = $xml->Properties->string;
+        $arr = $xml->Properties;
+
+        foreach ($arr->children() as $child)
+        {
+            if($child->getName() == "string")
+                if($child["name"] == "Name"){
+                    return $child;
+                }
+
+        }
         return $strAry;
     }
 
@@ -190,7 +200,7 @@ class RBXSubstrate
                 unset($saveXML->Item);
             }
 
-            RBXSubstrate::XML2File($saveXML, $path . "/" . $this->getItemName($xml) . ".rbxmx");
+            RBXSubstrate::XML2File($saveXML, $path . "/" . "Properties" . ".rbxmx");
         }
     }
 }
