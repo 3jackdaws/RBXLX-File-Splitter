@@ -30,7 +30,7 @@ class RBXSubstrateDummy extends RBXSubstrate
         return false;
     }
 
-    public function createItemDirectory(SimpleXMLElement $xml)
+    public function createItemDirectory(SimpleXMLElement $xml, $child)
     {
         $attributesObject = new SimpleXMLElement("<attributes></attributes>");
         foreach ($xml->attributes() as $k => $v)

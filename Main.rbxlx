@@ -33,26 +33,26 @@
 		<Item class="Camera" referent="RBX561372019E0544E889B82740FE230313">
 			<Properties>
 				<CoordinateFrame name="CFrame">
-					<X>-1878.18884</X>
-					<Y>1183.50476</Y>
-					<Z>-590.878723</Z>
-					<R00>-0.300311327</R00>
-					<R01>0.351049751</R01>
-					<R02>-0.886891901</R02>
+					<X>-1837.79065</X>
+					<Y>1158.68884</Y>
+					<Z>-568.370178</Z>
+					<R00>-0.353072912</R00>
+					<R01>0.553759158</R01>
+					<R02>-0.754115701</R02>
 					<R10>-0</R10>
-					<R11>0.929810882</R11>
-					<R12>0.368037879</R12>
-					<R20>0.953841329</R20>
-					<R21>0.110525943</R21>
-					<R22>-0.279232711</R22>
+					<R11>0.806027234</R11>
+					<R12>0.591878593</R12>
+					<R20>0.93559587</R20>
+					<R21>0.208976299</R21>
+					<R22>-0.28458637</R22>
 				</CoordinateFrame>
 				<Ref name="CameraSubject">null</Ref>
 				<token name="CameraType">0</token>
 				<float name="FieldOfView">70</float>
 				<CoordinateFrame name="Focus">
-					<X>-1876.41504</X>
-					<Y>1182.76868</Y>
-					<Z>-590.320251</Z>
+					<X>-1836.28247</X>
+					<Y>1157.50513</Y>
+					<Z>-567.801025</Z>
 					<R00>1</R00>
 					<R01>0</R01>
 					<R02>0</R02>
@@ -146,7 +146,7 @@
 		</Item>
 		<Item class="Part" referent="RBX7DA6819589B94645AB731032171EDF3F">
 			<Properties>
-				<bool name="Anchored">true</bool>
+				<bool name="Anchored">false</bool>
 				<float name="BackParamA">-0.5</float>
 				<float name="BackParamB">0.5</float>
 				<token name="BackSurface">0</token>
@@ -347,9 +347,9 @@ return module]]></ProtectedString>
 				<token name="formFactorRaw">1</token>
 				<token name="shape">1</token>
 				<Vector3 name="size">
-					<X>160</X>
-					<Y>160</Y>
-					<Z>160</Z>
+					<X>240</X>
+					<Y>240</Y>
+					<Z>240</Z>
 				</Vector3>
 			</Properties>
 			<Item class="SelectionBox" referent="RBXE8B1B0B27E6142579D29D110634A3429">
@@ -3960,6 +3960,64 @@ local g = Instance.new("BodyGyro",  MovementArea)
 g.Name = "RotationGyro"
 g.maxTorque = Vector3.new(300, 300, 300)
 
+
+do
+	local p = Instance.new("Part")
+	p.TopSurface = "Smooth"
+	p.BottomSurface = "Smooth"
+	p.CanCollide = true
+	p.Anchored = false
+	p.Transparency = .3
+	p.CustomPhysicalProperties = PhysicalProperties.new(0.001, 0, 1)
+	
+	local function CreateBoundary(name, position)
+		local thickness = 4
+		
+		local sX = position.X == 0 and MovementArea.Size.X or thickness
+		local sY = position.Y == 0 and MovementArea.Size.Y or thickness
+		local sZ = position.Z == 0 and MovementArea.Size.Z or thickness
+		
+		local C0 = CFrame.new(MovementArea.Size.X/2 * position.X,
+			MovementArea.Size.Y/2 * position.Y, MovementArea.Size.Z/2 * position.Z)
+		
+		local C1 = CFrame.new(thickness/2 * -position.X,
+			thickness/2 * -position.Y, thickness/2 * -position.Z)
+		
+		local obj = p:Clone()
+		obj.Name = name
+		obj.Parent = MovementArea
+		obj.Size = Vector3.new(sX, sY, sZ)
+		
+		obj.CFrame = MovementArea.CFrame * C0 * C1:inverse()
+		
+		local weld = Instance.new("Weld", MovementArea)
+		weld.Name = "Weld_"..name
+		weld.Part0 = MovementArea
+		weld.Part1 = obj
+		weld.C0 = C0
+		weld.C1 = C1
+		
+		local temp = Instance.new("ObjectValue", weld)
+		temp.Name = "ObjRef"
+		temp.Value = weld.Part1
+		
+		UtilityFunctions.Uplift(obj)
+		
+		--weld:Destroy()
+	end
+	
+	CreateBoundary("BoundaryFront", Vector3.new(0, 0, 1))
+	CreateBoundary("BoundaryBack", Vector3.new(0, 0, -1))
+	CreateBoundary("BoundaryLeft", Vector3.new(-1, 0, 0))
+	CreateBoundary("BoundaryRight", Vector3.new(1, 0, 0))
+	CreateBoundary("BoundaryTop", Vector3.new(0, 1, 0))
+	CreateBoundary("BoundaryBottom", Vector3.new(0, -1, 0))
+	
+	p:Destroy()
+end
+
+
+
 local movement_force = 40 * 1
 local movement_current = nil
 local check_dist = 0
@@ -3970,7 +4028,24 @@ local playing = false
 function Update()
 	if movement_current then
 		MovementArea.RotationGyro.cframe = movement_current.CFrame
+		
+		for i, v in pairs(MovementArea:GetChildren()) do
+			if v:IsA("Weld") then
+				v.Part1 = nil
+			end
+		end
+		
+		--wait()
 		MovementArea.CFrame = MovementArea.CFrame - MovementArea.Position + movement_current.Position
+		--wait()
+		
+		for i, v in pairs(MovementArea:GetChildren()) do
+			if v:IsA("Weld") then
+				local p = v.ObjRef.Value
+				p.CFrame = MovementArea.CFrame * v.C0 * v.C1:inverse()
+				v.Part1 = p
+			end
+		end
 		
 		local lookCF = CFrame.new(MovementArea.Position, movement_current.Next.Value.Position)
 		
@@ -4009,7 +4084,22 @@ local module = {}
 
 function module:StartMovementArea(level_obj)
 	level_obj:WaitForChild("Waypoints"):WaitForChild("StartPoint")
+	
+	for i, v in pairs(MovementArea:GetChildren()) do
+		if v:IsA("Weld") then
+			v.Part1 = nil
+		end
+	end
+	
 	MovementArea.CFrame = level_obj.Waypoints.StartPoint.CFrame
+	
+	for i, v in pairs(MovementArea:GetChildren()) do
+		if v:IsA("Weld") then
+			local p = v.ObjRef.Value
+			p.CFrame = MovementArea.CFrame * v.C0 * v.C1:inverse()
+			v.Part1 = p
+		end
+	end
 	
 	movement_current = level_obj.Waypoints.StartPoint
 	
@@ -5007,7 +5097,7 @@ return module]]></ProtectedString>
 								<R21>0</R21>
 								<R22>1</R22>
 							</CoordinateFrame>
-							<bool name="CanCollide">true</bool>
+							<bool name="CanCollide">false</bool>
 							<PhysicalProperties name="CustomPhysicalProperties">
 								<CustomPhysics>false</CustomPhysics>
 							</PhysicalProperties>
@@ -5079,7 +5169,7 @@ return module]]></ProtectedString>
 								<R21>0</R21>
 								<R22>1</R22>
 							</CoordinateFrame>
-							<bool name="CanCollide">true</bool>
+							<bool name="CanCollide">false</bool>
 							<PhysicalProperties name="CustomPhysicalProperties">
 								<CustomPhysics>false</CustomPhysics>
 							</PhysicalProperties>
@@ -5151,7 +5241,7 @@ return module]]></ProtectedString>
 								<R21>0</R21>
 								<R22>1</R22>
 							</CoordinateFrame>
-							<bool name="CanCollide">true</bool>
+							<bool name="CanCollide">false</bool>
 							<PhysicalProperties name="CustomPhysicalProperties">
 								<CustomPhysics>false</CustomPhysics>
 							</PhysicalProperties>
@@ -5223,7 +5313,7 @@ return module]]></ProtectedString>
 								<R21>0</R21>
 								<R22>1</R22>
 							</CoordinateFrame>
-							<bool name="CanCollide">true</bool>
+							<bool name="CanCollide">false</bool>
 							<PhysicalProperties name="CustomPhysicalProperties">
 								<CustomPhysics>false</CustomPhysics>
 							</PhysicalProperties>
@@ -5295,7 +5385,7 @@ return module]]></ProtectedString>
 								<R21>0</R21>
 								<R22>0</R22>
 							</CoordinateFrame>
-							<bool name="CanCollide">true</bool>
+							<bool name="CanCollide">false</bool>
 							<PhysicalProperties name="CustomPhysicalProperties">
 								<CustomPhysics>false</CustomPhysics>
 							</PhysicalProperties>
@@ -5367,7 +5457,7 @@ return module]]></ProtectedString>
 								<R21>0</R21>
 								<R22>1</R22>
 							</CoordinateFrame>
-							<bool name="CanCollide">true</bool>
+							<bool name="CanCollide">false</bool>
 							<PhysicalProperties name="CustomPhysicalProperties">
 								<CustomPhysics>false</CustomPhysics>
 							</PhysicalProperties>
@@ -5439,7 +5529,7 @@ return module]]></ProtectedString>
 								<R21>0</R21>
 								<R22>0</R22>
 							</CoordinateFrame>
-							<bool name="CanCollide">true</bool>
+							<bool name="CanCollide">false</bool>
 							<PhysicalProperties name="CustomPhysicalProperties">
 								<CustomPhysics>false</CustomPhysics>
 							</PhysicalProperties>
@@ -5511,7 +5601,7 @@ return module]]></ProtectedString>
 								<R21>0</R21>
 								<R22>1</R22>
 							</CoordinateFrame>
-							<bool name="CanCollide">true</bool>
+							<bool name="CanCollide">false</bool>
 							<PhysicalProperties name="CustomPhysicalProperties">
 								<CustomPhysics>false</CustomPhysics>
 							</PhysicalProperties>
@@ -5865,7 +5955,7 @@ return module
 			<double name="Timeout">10</double>
 		</Properties>
 	</Item>
-	<Item class="GamepadService" referent="RBX091C9AC66F314F31AFE5CAF188EA7754">
+	<Item class="GamepadService" referent="RBXC14578DE2D0E4DB1BD5F3751230112B7">
 		<Properties>
 			<string name="Name">GamepadService</string>
 		</Properties>

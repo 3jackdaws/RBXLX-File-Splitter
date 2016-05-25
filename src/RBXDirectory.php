@@ -31,7 +31,7 @@ class RBXDirectory
     {
         if($xml instanceof SimpleXMLElement)
         {
-            $this->parseXMLVisual($xml, 0);
+            $this->parseXMLVisual($xml, 1, -1);
         }
         else
         {
@@ -39,38 +39,28 @@ class RBXDirectory
         }
     }
 
-    protected function parseXMLVisual(SimpleXMLElement $xml, $level)
+    protected function parseXMLVisual(SimpleXMLElement $xml, $child, $childStart)
     {
         //TODO implement
-        $spacing = "";
-        for ($i = 0; $i < $level; $i++)
-        {
-            $spacing .= "   ";
-        }
         switch ($xml->getName())
         {
             case "Properties":
             {
-                print $spacing;
-                $this->RBXSubstrateInstance->createPropertiesFile($xml);
+                //$this->RBXSubstrateInstance->createPropertiesFile($xml);
                 break;
             }
             case "Item":
             {
-                print $spacing;
-                $this->RBXSubstrateInstance->createItemDirectory($xml);
-                $this->RBXSubstrateInstance->createItemAttributesXML($xml);
+                $this->RBXSubstrateInstance->createItemDirectory($xml, $child);
+                //$this->RBXSubstrateInstance->createItemAttributesXML($xml);
+                $this->RBXSubstrateInstance->saveXMLWithoutChildren($xml);
             }
             default:
             {
-                //echo $spacing . "Name: [" . $xml->getName() . "]";
-                if(strlen($xml->attributes()) > 1) print "\n";
-
-                //echo $spacing . "Attributes: [" . $xml->attributes() . "]\n";
-                //print $spacing . "Children: " . count($xml->children()) . "\n";
+                $child = $childStart;
                 foreach ($xml->children() as $toplevel)
                 {
-                    $this->parseXMLVisual($toplevel, $level + 1);
+                    $this->parseXMLVisual($toplevel, $child++, 0);
                 }
                 if(count($xml->children()) > 0)
                     $this->RBXSubstrateInstance->moveUpLevel();
