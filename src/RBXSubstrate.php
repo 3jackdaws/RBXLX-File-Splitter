@@ -57,6 +57,29 @@ class RBXSubstrate
         fwrite($fileHandle, $xmlString, strlen($xmlString));
     }
 
+    public static function WriteOrderingFile($path, $ordering)
+    {
+        $saveString = "";
+        foreach($ordering as $value)
+        {
+            $saveString = $saveString . $value . "\r\n";
+        }
+
+        if(file_exists($path))
+        {
+            $fileHandle = fopen($path, "r") or die("Could not open file " . $path . " for writing.");
+            $checkString = fread($fileHandle, filesize($path));
+
+            if($checkString == $saveString)
+            {
+                return;
+            }
+        }
+
+        $fileHandle = fopen($path, "w") or die("Could not open file " . $path . " for writing.");
+        fwrite($fileHandle, $saveString, strlen($saveString));
+    }
+
     public static function File2XML($path)
     {
         $fileHandle = fopen($path, "r") or die("Could not open file " . $path . " for reading.");
@@ -129,17 +152,37 @@ class RBXSubstrate
 
     }
 
-    public function createItemDirectory(SimpleXMLElement $xml, $childNum)
+    public function XMLItemToDirectoryName(SimpleXMLElement $xml)
     {
-        while(strlen($childNum) < 5)
+        $refID = substr($xml["referent"], -6);
+        $itemName = $this->getItemName($xml);
+        $directoryName = "";
+        if (strlen($itemName) > 16)
         {
-            $childNum = "0" . $childNum;
+            $directoryName = substr($itemName, 0, 7) . ".." . substr($itemName, -7);
+        }
+        else
+        {
+            $directoryName = $itemName;
         }
 
-        $directory = $this->currentDirectory() . "/" . $childNum . " - " . $this->getItemName($xml) ;//. " " . $xml->attributes()->referent;
-        //mkdir($this->RBXSubstrateInstance->currentDirectory() . "/" . $this->getItemName($xml));
+        $directoryName = $directoryName . " " . $refID;
+
+        return $directoryName;
+    }
+
+    public function createItemDirectory(SimpleXMLElement $xml, $childNum)
+    {
+        /*
+        while (strlen($childNum) < 5) {
+            $childNum = "0" . $childNum;
+        }
+        */
+
+        $directoryName = $this->XMLItemToDirectoryName($xml);
+
+        $directory = $this->currentDirectory() . "/" . $directoryName;
         $this->createDirectory($directory);
-        //print "Creating Directory " . $this->RBXSubstrateInstance->currentDirectory() . "/" . $this->getItemName($xml) . "\n";
     }
 
     public function getItemName(SimpleXMLElement $xml)

@@ -57,13 +57,27 @@ class RBXDirectory
             }
             default:
             {
+                $orderAry = [];
                 $child = $childStart;
                 foreach ($xml->children() as $toplevel)
                 {
+                    if($toplevel->getName() == "Item")
+                    {
+                        $orderAry[] = $this->RBXSubstrateInstance->XMLItemToDirectoryName($toplevel);
+                    }
+
                     $this->parseXMLVisual($toplevel, $child++, 0);
                 }
+                if(count($orderAry) > 0)
+                {
+                    $this->RBXSubstrateInstance->WriteOrderingFile(
+                        $this->RBXSubstrateInstance->currentDirectory() . "/Ordering.txt", $orderAry);
+                }
+
                 if(count($xml->children()) > 0)
                     $this->RBXSubstrateInstance->moveUpLevel();
+
+
             }
         }
     }

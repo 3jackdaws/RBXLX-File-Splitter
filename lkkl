@@ -1,0 +1,72 @@
+[33mcommit 621b2063398b970405e8fcc3727df87ff2556c21[m
+Author: Xsitsu <xsitsu@hotmail.com>
+Date:   Tue May 24 18:04:40 2016 -0700
+
+    Finished the entire split functionality. However, line spacing and tabs are total shit. Cannot regex them away, or you will destroy scripts saved as .rbxmx files!
+
+[33mcommit 74fd38134a0f32f740c7e2dbdc1452fefbcda7d4[m
+Author: Ian Murphy <3jackdaws@gmail.com>
+Date:   Sun May 15 12:41:32 2016 -0700
+
+    Added method to write attributes file to item directory.  Attributes file includes class name and referent ID.
+
+[33mcommit 0677401b2804d516f3601e30f6adc6581046a297[m
+Author: Ian Murphy <immur.50ae@gmail.com>
+Date:   Sun May 15 11:15:42 2016 -0700
+
+    Trying to add attributes file.
+
+[33mcommit 79626d5bf16e6d07a5b5fe64393d1d261480e3ce[m
+Author: Ian Murphy <immur.50ae@gmail.com>
+Date:   Sat May 14 13:45:25 2016 -0700
+
+    Added src directory.
+
+[33mcommit f577eb5f04b6c088da2746dc3253d045c3a3c070[m
+Author: Ian Murphy <immur.50ae@gmail.com>
+Date:   Sat May 14 13:40:17 2016 -0700
+
+    Changed project layout.  Directory creation sort of works.
+
+[33mcommit 96dd589be523de171317fc2b52d7fdaa0fde4407[m
+Author: Ian Murphy <immur.50ae@gmail.com>
+Date:   Sat May 14 12:33:29 2016 -0700
+
+    Moved cetain functions to the RBXDirectory class
+
+[33mcommit 7a08af476cec81aaf9befe91db8c015454958580[m
+Merge: d56f318 1b7ccc9
+Author: Ian Murphy <immur.50ae@gmail.com>
+Date:   Fri May 13 12:52:30 2016 -0700
+
+    Merge remote-tracking branch 'origin/master'
+
+[33mcommit d56f3188dd6a9865a8c639930ec36e37fa4f30af[m
+Author: Ian Murphy <immur.50ae@gmail.com>
+Date:   Fri May 13 12:52:19 2016 -0700
+
+    Added SimpleParser demo type script for testing.  Added RBXDirectory class to handle directory creation.
+
+[33mcommit 1b7ccc9e3a691f02206ea6d433cceaa3cd1b29f5[m
+Author: Ian Murphy <3jackdaws@users.noreply.github.com>
+Date:   Fri May 13 09:43:40 2016 -0700
+
+    Update README.md
+
+[33mcommit 15ecd0d3c3c8bdb6a0d6421140c39bf66d933a63[m
+Author: Ian Murphy <3jackdaws@users.noreply.github.com>
+Date:   Thu May 12 23:08:12 2016 -0700
+
+    Update README.md
+
+[33mcommit 2c6d2594a776f5b9ed4423b571515a748163d45e[m
+Author: Ian Murphy <3jackdaws@users.noreply.github.com>
+Date:   Thu May 12 22:59:40 2016 -0700
+
+    Create README.md
+
+[33mcommit b5e1d8e3a26746ecf47c8825e58b6b0a9c840ebc[m
+Author: Ian Murphy <immur.50ae@gmail.com>
+Date:   Thu May 12 22:41:17 2016 -0700
+
+    Added several helper methods for file access and xml writing.
