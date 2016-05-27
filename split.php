@@ -6,7 +6,7 @@
  * Time: 4:05 PM
  */
 
-include_once("src/RBXDirectory.php");
+include_once("splitter_src/RBXDirectory.php");
 $filename = $argv[1];
 echo "Splitting: " . $filename . "\n";
 $xml = RBXSubstrate::File2XML($filename);

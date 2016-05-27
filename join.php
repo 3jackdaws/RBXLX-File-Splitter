@@ -6,7 +6,7 @@
  * Time: 4:05 PM
  */
 
-include_once("src/RBXDirectory.php");
+include_once("splitter_src/RBXDirectory.php");
 $filename = $argv[1];
 if (strlen($filename) == 0)
 {
@@ -14,7 +14,7 @@ if (strlen($filename) == 0)
 }
 $filename = $filename . ".rbxlx";
 
-echo "Splicing: " . $filename . "\n";
+echo "Joining: " . $filename . "\n";
 //$xml = RBXSubstrate::File2XML($filename);
 
 $constructXML = simplexml_load_string(ROBLOX_TAG . "</roblox>");
@@ -29,12 +29,9 @@ $xmlString = RBXSubstrate::FilterPHPXMLStringRetardations($xmlString);
 
 $path = getcwd() . "/" . $filename;
 
-echo "Path: " . $path . "\n";
-
 try
 {
     $fileHandler = fopen($path, "w");
-    //fwrite($fileHandle, $xmlString, strlen($xmlString));
     fwrite($fileHandler, $xmlString, strlen($xmlString));
 }
 catch (Exception $e)
