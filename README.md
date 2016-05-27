@@ -11,9 +11,8 @@ The tool is run once to convert an existing .rbxlx file to a directory structure
 PHP is great for websites because it can be embedded into the page markup.  Why, then, is it being used like a general purpose scripting language? Actually, this started out as a web thing.  When the idea changed to this xml converter, the language did not.  Normally, a project like this would be done in Python or Java or basically anything that isn't a web scripting language, but we wanted to use something new and our choices were either PHP or a functional programming language. 
 
 ##TODO
-1.  Figure out how to do bullets in markdown.
-2.  Write a recursive function to turn a simpleXML object into a specific directory structure.
-3.  Write a recursive function that goes the other way.
-4.  ???
+* Fix .xml spacing from split
+* Actually remove deleted directories in /datamodel when updating the split
+
 
 
