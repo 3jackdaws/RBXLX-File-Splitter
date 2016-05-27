@@ -16,28 +16,69 @@ class RBXSubstrate
     /*
      * Parameters: (simpleXML object, path to save location
      */
-    public static function XML2File(SimpleXMLElement $xmlObject, $path)
+    public static function FilterPHPXMLStringRetardations($string)
     {
-        $xmlString = $xmlObject->asXML();
+        $xmlString = $string;
 
         $pattern = "/<\?xml.+\\n/";
         $replacement = "";
         $xmlString = preg_replace($pattern, $replacement, $xmlString);
 
-        // Fix stupid PHP XML stuff
-        $ltPattern = "&lt;";
-        $ltReplacement = "<";
-        $gtPattern = "&gt;";
-        $gtReplacement = ">";
-        $nullPattern = "<" . "null/" . ">";
-        $nullReplacement = "<" . "null" . "><" . "/null" . ">";
-        $descPattern = "<" . "string name=\"Description\"/>";
-        $descReplacement = "<" . "string name=\"Description\"></string>";
 
-        $xmlString = str_replace($ltPattern, $ltReplacement, $xmlString);
-        $xmlString = str_replace($gtPattern, $gtReplacement, $xmlString);
-        $xmlString = str_replace($nullPattern, $nullReplacement, $xmlString);
-        $xmlString = str_replace($descPattern, $descReplacement, $xmlString);
+        $patterns = [];
+        $replacements = [];
+
+        // Fix stupid PHP XML stuff
+        $patterns[] = "&lt;";
+        $replacements[] = "<";
+
+        $patterns[] = "&gt;";
+        $replacements[] = ">";
+
+        $patterns[] = "<" . "null/" . ">";
+        $replacements[] = "<" . "null" . "><" . "/null" . ">";
+/*
+        $patterns[] = "<" . "string name=\"Description\"/>";
+        $replacements[] = "<" . "string name=\"Description\"></string>";
+
+        $patterns[] = "<" . "BinaryString name=\"ClusterGridV3\"/>";
+        $replacements[] = "<" . "BinaryString name=\"ClusterGridV3\"></BinaryString>";
+
+        $patterns[] = "<" . "string name=\"Text\"/>";
+        $replacements[] = "<" . "string name=\"Text\"></string>";
+*/
+        for ($i = 0; $i < count($patterns); $i++)
+        {
+            $xmlString = str_replace($patterns[$i], $replacements[$i], $xmlString);
+        }
+
+        $pattern = "/<.+\/>/";
+        preg_match_all($pattern, $xmlString, $matches);
+
+        // Retarded PHP shit
+        foreach ($matches as $matchout)
+        {
+            foreach ($matchout as $match)
+            {
+                $tagPattern = "/[A-Za-z0-9]+/";
+                preg_match($tagPattern, $match, $tagFind);
+
+                foreach($tagFind as $doTag)
+                {
+                    $replaceString = substr($match, 0, strlen($match) - 2) . "></" . $doTag . ">";
+                    $xmlString = str_replace($match, $replaceString, $xmlString);
+                }
+            }
+        }
+
+        return $xmlString;
+    }
+
+    public static function XML2File(SimpleXMLElement $xmlObject, $path)
+    {
+        $xmlString = $xmlObject->asXML();
+
+        $xmlString = self::FilterPHPXMLStringRetardations($xmlString);
 
         $xmlString = ROBLOX_TAG . "\t<External>null</External>\n\t<External>nil</External>\n\t" . $xmlString;
         $xmlString = $xmlString . "\n</roblox>";
@@ -243,7 +284,7 @@ class RBXSubstrate
                 unset($saveXML->Item);
             }
 
-            RBXSubstrate::XML2File($saveXML, $path . "/" . "Properties" . ".rbxmx");
+            RBXSubstrate::XML2File($saveXML, $path . "/" . "obj" . ".rbxmx");
         }
     }
 }

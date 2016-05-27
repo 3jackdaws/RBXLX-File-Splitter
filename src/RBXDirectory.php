@@ -82,5 +82,52 @@ class RBXDirectory
         }
     }
 
+    public function recursiveAddChildren(SimpleXMLElement $xml, $directory, $level)
+    {
+        $orderFile = "Ordering.txt";
+        if(file_exists($directory . "/" . $orderFile))
+        {
+            $lines = file($directory . "/" . $orderFile) or die("Could not open order file in directory: " . $directory);
+            foreach($lines as $line)
+            {
+                $childDir = substr($line, 0, (strlen($line) - 2));
+
+                /*
+                for ($i = 0; $i < $level; $i++)
+                {
+                    echo "    ";
+                }
+                echo "[" . $childDir . "]\n";
+                */
+
+                $childPath = $directory . "/" . $childDir;
+
+                if (is_dir($childPath))
+                {
+                    if (!file_exists($childPath . "/obj.rbxmx"))
+                        die($directory . "/" . $childDir . " is missing it's obj.rbxmx file!!!");
+
+                    $fileHandle = fopen($childPath . "/obj.rbxmx", "r");
+                    $xmlString = fread($fileHandle, filesize($childPath . "/obj.rbxmx"));
+
+                    $childXML = simplexml_load_string($xmlString);
+                    $childXML = $childXML->Item;
+
+                    $this->recursiveAddChildren($childXML, $childPath, $level + 1);
+
+                    $childString = $childXML->asXML();
+
+                    $frontPos = strpos($childString, ">");
+                    $addString = substr($childString, $frontPos + 1, strlen($childString) - ($frontPos + 1) - 7);
+
+                    $added = $xml->addChild("Item", $addString);
+                    foreach($childXML->attributes() as $k => $v)
+                    {
+                        $added->addAttribute($k, $v);
+                    }
+                }
+            }
+        }
+    }
     
 }
