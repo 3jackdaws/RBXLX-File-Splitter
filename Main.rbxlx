@@ -5955,7 +5955,7 @@ return module
 			<double name="Timeout">10</double>
 		</Properties>
 	</Item>
-	<Item class="GamepadService" referent="RBX333F3832C8CC4BA0AB15B9BEAB597217">
+	<Item class="GamepadService" referent="RBX73F1083CA7134B63804A453C63675231">
 		<Properties>
 			<string name="Name">GamepadService</string>
 		</Properties>

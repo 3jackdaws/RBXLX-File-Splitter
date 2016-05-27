@@ -12,3 +12,5 @@ echo "Splitting: " . $filename . "\n";
 $xml = RBXSubstrate::File2XML($filename);
 $parser = new RBXDirectory(dirname(__FILE__));
 $parser->generateDirFromXml($xml);
+
+$parser->deleteUnusedDirectories(getcwd() . "/datamodel");

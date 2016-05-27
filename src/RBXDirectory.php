@@ -129,5 +129,59 @@ class RBXDirectory
             }
         }
     }
+
+    private function NukeDirectory($directory)
+    {
+        if (is_dir($directory))
+        {
+            $dirList = scandir($directory);
+            foreach ($dirList as $dir)
+            {
+                if($dir != "." and $dir != "..")
+                {
+                    $this->NukeDirectory($directory . "/" . $dir);
+                }
+            }
+            rmdir($directory);
+        }
+        else
+        {
+            unlink($directory);
+        }
+    }
+
+    public function deleteUnusedDirectories($directory)
+    {
+        $presentDirectories = scandir($directory);
+        $keepDirectories = [".", "..", "Ordering.txt", "obj.rbxmx"];
+        $childDirectories = [];
+
+        $orderFile = "Ordering.txt";
+        if(file_exists($directory . "/" . $orderFile))
+        {
+            $lines = file($directory . "/" . $orderFile) or die("Could not open order file in directory: " . $directory);
+            foreach($lines as $line)
+            {
+                $childDir = substr($line, 0, (strlen($line) - 2));
+
+                $keepDirectories[] = $childDir;
+                $childDirectories[]  = $childDir;
+            }
+        }
+
+        // Anything in presentDirectories that is NOT in keepDirectories
+        $delAry = array_diff($presentDirectories, $keepDirectories);
+
+        foreach($delAry as $dir)
+        {
+            $this->NukeDirectory($directory . "/" . $dir);
+        }
+
+        foreach($childDirectories as $dir)
+        {
+            $this->deleteUnusedDirectories($directory . "/" . $dir);
+        }
+
+    }
     
 }
